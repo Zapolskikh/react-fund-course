@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Counter from './components/Counter';
 import Input from './components/Input';
 import PostItem from './components/PostItem';
 import PostList from './components/PostList';
 import MyButton from './components/UI/button/MyButton';
+import MyInput from './components/UI/input/MyInput';
+import MyInputForwardRef from './components/UI/input/MyInputForwardRef';
 import './styles/App.css';
 /* //Первый способ используем хуки
 function App() {
@@ -45,13 +47,41 @@ function App() {
     {id:2, title:'Python 2', body:'Description'},
     {id:3, title:'Python 3', body:'Description'}]
   )
+    const [post, setPost] = useState({title:"",body:''}) 
+  //const [title, setTitle] = useState(''); /*двусторонее связывание, получение данных из управляемый компонент*/
+  //const [body, setBody] = useState('');
+  //const bodyInputRef = useRef(); 
+  function addNewPost(e){
+    const newPost = {
+      id: Date.now(), //в миллисекундах, гарантируется уникальность айди
+     // title,
+     // body
+    }
+   // setPosts([...posts, newPost]) //разворачиваем существующий ...постс с неизвестным количесвом элементов и добавляем новый пост в конец //всегда так делай когда хочешь добавать элемент в массив //можно добавить напрямую ([...posts, {...post, id.Date.now()}])
+   setPosts([...posts, {...post, id:Date.now()}]);
+   // setTitle('');
+   // setBody('');
+    setPost('');
+    e.preventDefault(); //предотращаем дефолтное поведение браузера.. страница не обновляется
+    console.log(newPost);
+
+    //console.log(bodyInputRef.current.value);
+  }
 
 return (
   <div className="App">
     <form>
-      <input type = 'text' placeholder='Name of post'></input>
-      <input type = 'text' placeholder='Discription of post'></input>
-      <MyButton>Create post</MyButton>
+      {/*<MyInput type = 'text' placeholder='Name of post' value={post.title} onChange={e => setTitle(e.target.value)}></MyInput> {/*двусторонее связывание, получение данных из управляемый компонент*/}
+      {/*<MyInput type = 'text' placeholder='Discription of post' value={post.body} onChange={e => setBody(e.target.value)}></MyInput> {/*двусторонее связывание, получение данных из управляемый компонент*/}
+
+      <MyInput type = 'text' placeholder='Name of post' value={post.title} onChange={e => setPost({...post, title: e.target.value})}></MyInput> {/*развовачиваем пост и меняем только то что нужно*/}
+      <MyInput type = 'text' placeholder='Discription of post' value={post.body} onChange={e => setPost({...post, body: e.target.value})}></MyInput> {/*двусторонее связывание, получение данных из управляемый компонент*/}
+
+
+
+      {/*<input ref={bodyInputRef}></input> без управляемого компонента - не рекомендуется напрямую управлять элементами дом дерева */}
+      {/*<MyInputForwardRef type = 'text' placeholder='Discription of post' ref={bodyInputRef}></MyInputForwardRef> {/*неуправляемый компонент, неконтролируемый, лучше делать связываемый вариант */}
+      <MyButton onClick={addNewPost}>Create post</MyButton>
 
     </form>
     <PostList posts={posts} title='list 1'/>
